@@ -7,6 +7,15 @@ export const Renderer = ({ schema }: RendererProps) => {
   return (
     <Suspense fallback={<div>Loading UI...</div>}>
       {schema.components.map((component, index) => {
+        if (!schema || typeof schema !== "object") {
+          return (
+            <ErrorMessage
+              title="Invalid schema"
+              description="Schema is missing or not an object."
+            />
+          );
+        }
+
         if (!component.type || typeof component.type !== "string") {
           return (
             <ErrorMessage
