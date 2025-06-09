@@ -1,46 +1,159 @@
-# Getting Started with Create React App
+# Dynamic Rendering UI with React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project provides a **dynamic UI renderer** in React, where the interface is defined via **JSON schemas** and components are rendered accordingly. It supports reusable UI elements such as buttons, inputs, lists, list items and composed panels with search and filtering functionality.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Project Structure
 
-### `npm start`
+```
+src/
+├── components/
+│   ├── base/
+│   │   ├── button/
+│   │   ├── input/
+│   │   ├── list/
+│   │   ├── list-item/
+│   │   └── title/
+│   ├── composed/
+│   │   └── CheckboxListPanel/
+│   └── icons/
+├── renderer/
+│   ├── componentRegistry.ts
+│   ├── Renderer.tsx
+│   └── renderer.types.ts
+└── schemas/
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Features
 
-### `npm test`
+- Schema-based component rendering
+- Modular and reusable base components
+- SCSS Modules support for scoped styling
+- Dynamic page title setting
+- Custom SVG icon support
+- Filtering and checkbox logic with state management
+- Extensible architecture to support more schema component types
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1. Install dependencies
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Dynamic Renderer Example
 
-### `npm run eject`
+### `Renderer.tsx`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```tsx
+import { Suspense } from "react";
+import { COMPONENT_MAP } from "../registry/componentRegistry";
+import { RendererProps } from "./renderer.types";
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+export const Renderer = ({ schema }: RendererProps) => {
+  if (!schema?.components || !Array.isArray(schema.components)) {
+    return <div>Invalid schema: "components" must be an array.</div>;
+  }
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  return (
+    <Suspense fallback={<div>Loading UI...</div>}>
+      {schema.components.map((component, index) => {
+        const Component = COMPONENT_MAP[component.type];
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+        if (!Component) {
+          return (
+            <div key={index}>
+              Unknown component type: <strong>{component.type}</strong>
+            </div>
+          );
+        }
 
-## Learn More
+        return <Component key={index} {...component} />;
+      })}
+    </Suspense>
+  );
+};
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Component Notes
+
+### Button
+
+- Props: `children`, `onClick`, `color` (default: `primary`), `variant` (default: `contained`)
+- Usage: Primary and secondary variants styled via SCSS modules
+
+```tsx
+<Button onClick={handleClick} color="secondary" variant="outlined">
+  Click Me
+</Button>
+```
+
+### Input
+
+- Accepts a search icon imported from `components/icons/search.svg`
+- Supports SCSS modules with custom styles
+
+### List
+
+- Maps an array of items to `ListItem` components
+- Props: `items`, `onToggle`
+- Shows fallback text when empty
+
+```tsx
+<List items={options} onToggle={handleToggle} />
+```
+
+### ListItem
+
+- Accepts `checked`, `disabled`, `title`, `subtitle`, `imageUrl`
+- When checked, background turns green, tick turns white
+
+### PageTitle
+
+- Automatically sets `document.title`
+- Renders an `<h1>` with provided label
+
+```tsx
+<PageTitle label="My Dynamic Page" />
+```
+
+### CheckboxListPanel
+
+- Renders a searchable, filterable list of checkboxes
+- Includes reset and submit buttons
+- Submits data to `console.log` if `onSubmit === "logToConsole"`
+
+---
+
+## JSON Schema Example
+
+```json
+{
+  "components": [
+    {
+      "type": "page-title",
+      "title": "Select your preferences"
+    },
+    {
+      "type": "checkbox-list-panel",
+      "options": [
+        {
+          "value": "paypal",
+          "title": "PayPal",
+          "subtitle": "Use your PayPal balance",
+          "checked": true
+        }
+      ],
+      "onSubmit": "logToConsole"
+    }
+  ]
+}
+```

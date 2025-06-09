@@ -1,0 +1,16 @@
+.panel {
+  width: 412px;
+  height: 367px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-sizing: border-box;
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+  }
+}
