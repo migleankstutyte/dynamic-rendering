@@ -55,22 +55,40 @@ npm install
 import { Suspense } from "react";
 import { COMPONENT_MAP } from "../registry/componentRegistry";
 import { RendererProps } from "./renderer.types";
+import { ErrorMessage } from "../components/base";
 
 export const Renderer = ({ schema }: RendererProps) => {
-  if (!schema?.components || !Array.isArray(schema.components)) {
-    return <div>Invalid schema: "components" must be an array.</div>;
-  }
-
   return (
     <Suspense fallback={<div>Loading UI...</div>}>
       {schema.components.map((component, index) => {
+        if (!schema || typeof schema !== "object") {
+          return (
+            <ErrorMessage
+              title="Invalid schema"
+              description="Schema is missing or not an object."
+            />
+          );
+        }
+
+        if (!component.type || typeof component.type !== "string") {
+          return (
+            <ErrorMessage
+              key={index}
+              title={`Missing "type" for component at index ${index}`}
+              description="Each component must have a valid 'type' string."
+            />
+          );
+        }
+
         const Component = COMPONENT_MAP[component.type];
 
         if (!Component) {
           return (
-            <div key={index}>
-              Unknown component type: <strong>{component.type}</strong>
-            </div>
+            <ErrorMessage
+              key={index}
+              title={`Unknown component: "${component.type}"`}
+              description="Please check the schema or register the component."
+            />
           );
         }
 
