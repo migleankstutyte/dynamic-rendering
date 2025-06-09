@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Input from "../../base/input/Input";
-import Button from "../../base/button/Button";
-import List from "../../base/list/List";
+import { Button, Input, List } from "../../base";
 import { ComponentSchema } from "../../../registry/renderer.types";
 
 import styles from "./checkboxListPanel.module.scss";

@@ -1,5 +1,5 @@
 export type ComponentSchema = {
-  type: string;
+  type?: string;
   [key: string]: any;
 };
 
