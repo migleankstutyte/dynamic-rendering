@@ -11,6 +11,7 @@ src/
 ├── components/
 │   ├── base/
 │   │   ├── button/
+│   │   ├── error-message/
 │   │   ├── input/
 │   │   ├── list/
 │   │   ├── list-item/
@@ -112,6 +113,18 @@ export const Renderer = ({ schema }: RendererProps) => {
 <Button onClick={handleClick} color="secondary" variant="outlined">
   Click Me
 </Button>
+```
+
+### ErrorMessage
+
+- Used to display errors from invalid schemas or runtime issues
+- Props: `title` (string), `description?` (optional string)
+
+```tsx
+<ErrorMessage
+  title="Invalid schema"
+  description="Schema must be an object with a components array."
+/>
 ```
 
 ### Input
