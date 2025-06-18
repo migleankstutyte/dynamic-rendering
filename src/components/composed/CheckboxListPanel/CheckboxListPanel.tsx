@@ -35,10 +35,10 @@ const CheckboxListPanel = ({ options, onSubmit }: ComponentSchema) => {
   };
 
   const filtered = options
-    .filter((opt: any) =>
+    .filter((opt: ComponentSchema) =>
       opt.title.toLowerCase().includes(search.toLowerCase())
     )
-    .map((opt: any) => ({
+    .map((opt: ComponentSchema) => ({
       ...opt,
       checked: !!checkedItems[opt.value],
     }));
