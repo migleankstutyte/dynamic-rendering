@@ -9,7 +9,7 @@ export default function App() {
 
   try {
     if (schema.components.length === 0) {
-      throw new Error("Schema contains no components.");
+      return <ErrorMessage title="Schema contains no components." />;
     }
 
     content = <Renderer schema={schema} />;
