@@ -4,18 +4,18 @@ import { RendererProps } from "./renderer.types";
 import { ErrorMessage } from "../components/base";
 
 export const Renderer = ({ schema }: RendererProps) => {
+  if (!schema || typeof schema !== "object") {
+    return (
+      <ErrorMessage
+        title="Invalid schema"
+        description="Schema is missing or not an object."
+      />
+    );
+  }
+
   return (
     <Suspense fallback={<div>Loading UI...</div>}>
-      {schema.components.map((component, index) => {
-        if (!schema || typeof schema !== "object") {
-          return (
-            <ErrorMessage
-              title="Invalid schema"
-              description="Schema is missing or not an object."
-            />
-          );
-        }
-
+      {schema?.components.map((component, index) => {
         if (!component.type || typeof component.type !== "string") {
           return (
             <ErrorMessage
