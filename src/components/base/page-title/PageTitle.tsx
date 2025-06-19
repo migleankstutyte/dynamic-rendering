@@ -1,8 +1,9 @@
 import { useEffect } from "react";
+import { PageTitleProps } from "./pageTitle.types";
 
 import "./pageTitle.scss";
 
-const PageTitle = ({ label }: { label: string }) => {
+const PageTitle = ({ label }: PageTitleProps) => {
   useEffect(() => {
     document.title = label;
   }, [label]);
