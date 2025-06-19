@@ -8,10 +8,6 @@ export default function App() {
   let content;
 
   try {
-    if (schema.components.length === 0) {
-      return <ErrorMessage title="Schema contains no components." />;
-    }
-
     content = <Renderer schema={schema} />;
   } catch (error: any) {
     content = <ErrorMessage title="Render Error" description={error.message} />;

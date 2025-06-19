@@ -13,6 +13,10 @@ export const Renderer = ({ schema }: RendererProps) => {
     );
   }
 
+  if (schema.components.length === 0) {
+    return <ErrorMessage title="Schema contains no components." />;
+  }
+
   return (
     <Suspense fallback={<div>Loading UI...</div>}>
       {schema?.components.map((component, index) => {
